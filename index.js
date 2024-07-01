@@ -198,6 +198,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
 app.put("/usuarios/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
