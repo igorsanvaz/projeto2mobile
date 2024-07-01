@@ -102,15 +102,20 @@ app.get("/users", (req, res) => {
 app.post("/users", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
-    const { email, password } = req.body;
 
-    if (!email || !password) {
+    // Adicionando logs adicionais
+    console.log("Email recebido:", req.body.email);
+    console.log("Senha recebida:", req.body.senha);
+
+    const { email, senha } = req.body;
+
+    if (!email || !senha) {
       return res.status(400).json({ error: "Email e senha são obrigatórios." });
     }
 
     client.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
-      [email, password],
+      "INSERT INTO users (email, senha) VALUES ($1, $2) RETURNING *", 
+      [email, senha],
       (err, result) => {
         if (err) {
           console.error("Erro ao executar a query de INSERT:", err.message);
@@ -128,6 +133,7 @@ app.post("/users", (req, res) => {
     res.status(500).json({ error: "Erro interno do servidor.", details: erro.message });
   }
 });
+
 
 app.post("/usuarios", (req, res) => {
   try {
