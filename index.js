@@ -113,7 +113,8 @@ app.post("/users", (req, res) => {
       [email, senha],
       (err, result) => {
         if (err) {
-          return console.error("Erro ao executar a query de INSERT", err);
+          console.error("Erro ao executar a query de INSERT", err);
+          return res.status(500).json({ error: "Erro ao inserir dados no banco de dados." });
         }
         const { id } = result.rows[0];
         res.setHeader("id", `${id}`);
@@ -126,8 +127,6 @@ app.post("/users", (req, res) => {
     res.status(500).json({ error: "Erro interno do servidor." });
   }
 });
-
-
 
 app.post("/usuarios", (req, res) => {
   try {
