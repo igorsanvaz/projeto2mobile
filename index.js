@@ -174,7 +174,7 @@ app.get("/users/:email", async (req, res) => {
 });
 
 // Rota de login
-app.post("/users", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     console.log("Recebido login:", { email, password });
