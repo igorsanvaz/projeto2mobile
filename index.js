@@ -84,7 +84,7 @@ app.delete("/usuarios/:id", (req, res) => {
     console.log(error);
   }
 });
-app.get("/users", (req, res) => {
+app.get("/users/", (req, res) => {
   try {
     client.query("SELECT * FROM users", function
       (err, result) {
@@ -156,7 +156,22 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
-app.post("/users", async (req, res) => {
+app.get("/users/:email", async (req, res) => {
+  const { email } = req.params;
+  try {
+    const result = await client.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+    res.json({ user: result.rows[0] });
+  } catch (error) {
+    console.error("Erro ao executar a query de SELECT", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+});
+
+// Rota de login
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     console.log("Recebido login:", { email, password });
