@@ -99,6 +99,28 @@ app.get("/users", (req, res) => {
   }
 });
 
+app.post("/users", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { email, senha } = req.body;
+    client.query(
+      "INSERT INTO Usuarios (email, senha) VALUES ($1, $2) RETURNING * ", [ email, senha],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+
 app.post("/usuarios", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
