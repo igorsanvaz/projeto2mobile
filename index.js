@@ -3,7 +3,6 @@ const { Client } = require("pg");
 const cors = require("cors");
 const bodyparser = require("body-parser");
 const config = require("./config");
-const bcrypt = require("bcrypt"); // Certifique-se de que bcrypt está importado corretamente
 
 
 const app = express();
