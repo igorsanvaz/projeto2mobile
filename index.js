@@ -109,12 +109,13 @@ app.post("/users", (req, res) => {
     }
 
     client.query(
-      "INSERT INTO users (email, senha) VALUES ($1, $2) RETURNING *", 
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
       [email, password],
       (err, result) => {
         if (err) {
-          console.error("Erro ao executar a query de INSERT", err);
-          return res.status(500).json({ error: "Erro ao inserir dados no banco de dados." });
+          console.error("Erro ao executar a query de INSERT:", err.message);
+          console.error("Detalhes do erro:", err);
+          return res.status(500).json({ error: "Erro ao inserir dados no banco de dados.", details: err.message });
         }
         const { id } = result.rows[0];
         res.setHeader("id", `${id}`);
@@ -123,8 +124,8 @@ app.post("/users", (req, res) => {
       }
     );
   } catch (erro) {
-    console.error(erro);
-    res.status(500).json({ error: "Erro interno do servidor." });
+    console.error("Erro no servidor:", erro.message);
+    res.status(500).json({ error: "Erro interno do servidor.", details: erro.message });
   }
 });
 
