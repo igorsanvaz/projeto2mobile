@@ -156,13 +156,17 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
+
+// Verificar se o email existe
 app.get("/users/:email", async (req, res) => {
   const { email } = req.params;
   try {
     const result = await client.query("SELECT * FROM users WHERE email = $1", [email]);
     if (result.rows.length === 0) {
+      console.log(`Usuário com email ${email} não encontrado.`);
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
+    console.log(`Usuário com email ${email} encontrado.`);
     res.json({ user: result.rows[0] });
   } catch (error) {
     console.error("Erro ao executar a query de SELECT", error);
@@ -194,10 +198,9 @@ app.post("/users", async (req, res) => {
     res.json({ user: { id: user.id, email: user.email } });
   } catch (error) {
     console.error("Erro ao fazer login:", error);
-    res.status(500).json({ error: "Erro interno do servidor." });
+    res.status(500).json({ error: "Erro interno do servidor.", details: error.message });
   }
 });
-
 
 app.put("/usuarios/:id", (req, res) => {
   try {
