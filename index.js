@@ -105,17 +105,17 @@ app.post("/users", (req, res) => {
 
     // Adicionando logs adicionais
     console.log("Email recebido:", req.body.email);
-    console.log("Senha recebida:", req.body.senha);
+    console.log("Senha recebida:", req.body.password);
 
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !senha) {
-      return res.status(400).json({ error: "Email e senha são obrigatórios." });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email e password são obrigatórios." });
     }
 
     client.query(
-      "INSERT INTO users (email, senha) VALUES ($1, $2) RETURNING *", 
-      [email, senha],
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *", 
+      [email, password],
       (err, result) => {
         if (err) {
           console.error("Erro ao executar a query de INSERT:", err.message);
