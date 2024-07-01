@@ -156,6 +156,28 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
+app.post("/users", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await client.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Usuário não encontrado." });
+    }
+
+    const user = result.rows[0];
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({ error: "Senha incorreta." });
+    }
+
+    res.json({ user: { id: user.id, email: user.email } });
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+});
+
 app.put("/usuarios/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
