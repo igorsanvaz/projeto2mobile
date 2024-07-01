@@ -156,7 +156,6 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
-
 // Verificar se o email existe
 app.get("/users/:email", async (req, res) => {
   const { email } = req.params;
@@ -201,6 +200,7 @@ app.post("/users", async (req, res) => {
     res.status(500).json({ error: "Erro interno do servidor.", details: error.message });
   }
 });
+
 
 app.put("/usuarios/:id", (req, res) => {
   try {
