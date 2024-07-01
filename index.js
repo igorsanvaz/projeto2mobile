@@ -102,15 +102,15 @@ app.get("/users", (req, res) => {
 app.post("/users", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !senha) {
+    if (!email || !password) {
       return res.status(400).json({ error: "Email e senha são obrigatórios." });
     }
 
     client.query(
       "INSERT INTO users (email, senha) VALUES ($1, $2) RETURNING *", 
-      [email, senha],
+      [email, password],
       (err, result) => {
         if (err) {
           console.error("Erro ao executar a query de INSERT", err);
