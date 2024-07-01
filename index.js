@@ -159,8 +159,11 @@ app.post("/usuarios", (req, res) => {
 app.post("/users", async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log("Recebido login:", { email, password });
+
     const result = await client.query("SELECT * FROM users WHERE email = $1", [email]);
     if (result.rows.length === 0) {
+      console.log("Usuário não encontrado.");
       return res.status(400).json({ error: "Usuário não encontrado." });
     }
 
@@ -168,9 +171,11 @@ app.post("/users", async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
+      console.log("Senha incorreta.");
       return res.status(400).json({ error: "Senha incorreta." });
     }
 
+    console.log("Login bem-sucedido:", { id: user.id, email: user.email });
     res.json({ user: { id: user.id, email: user.email } });
   } catch (error) {
     console.error("Erro ao fazer login:", error);
