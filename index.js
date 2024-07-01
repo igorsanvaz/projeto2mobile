@@ -99,7 +99,7 @@ app.get("/users/", (req, res) => {
   }
 });
 
-app.post("/users", (req, res) => {
+/*app.post("/users", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
 
@@ -132,7 +132,7 @@ app.post("/users", (req, res) => {
     console.error("Erro no servidor:", erro.message);
     res.status(500).json({ error: "Erro interno do servidor.", details: erro.message });
   }
-});
+});*/
 
 
 app.post("/usuarios", (req, res) => {
@@ -156,7 +156,6 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
-// Verificar se o email existe
 app.get("/users/:email", async (req, res) => {
   const { email } = req.params;
   try {
@@ -174,7 +173,7 @@ app.get("/users/:email", async (req, res) => {
 });
 
 // Rota de login
-app.post("/users", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     console.log("Recebido login:", { email, password });
@@ -198,6 +197,33 @@ app.post("/users", async (req, res) => {
   } catch (error) {
     console.error("Erro ao fazer login:", error);
     res.status(500).json({ error: "Erro interno do servidor.", details: error.message });
+  }
+});
+
+// Rota para criar usuário
+app.post("/users", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Verificar se o email já existe
+    const existingUser = await client.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (existingUser.rows.length > 0) {
+      console.log(`Email ${email} já cadastrado.`);
+      return res.status(400).json({ error: "Email já cadastrado." });
+    }
+
+    // Criar novo usuário
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await client.query(
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+      [email, hashedPassword]
+    );
+
+    const newUser = result.rows[0];
+    console.log("Usuário criado com sucesso:", newUser);
+    res.status(201).json({ user: { id: newUser.id, email: newUser.email } });
+  } catch (error) {
+    console.error("Erro ao criar usuário:", error);
+    res.status(500).json({ error: "Erro ao inserir dados no banco de dados.", details: error.message });
   }
 });
 
