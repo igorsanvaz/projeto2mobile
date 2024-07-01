@@ -105,7 +105,7 @@ app.post("/users", (req, res) => {
 
     // Adicionando logs adicionais
     console.log("Email recebido:", req.body.email);
-    console.log("Senha recebida:", req.body.password);
+    console.log("Password recebido:", req.body.password);
 
     const { email, password } = req.body;
 
